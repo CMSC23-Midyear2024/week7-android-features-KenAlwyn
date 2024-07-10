@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'contact.dart';
+import 'package:week_7_android_features/pages/add_contact.dart';
+import 'pages/contact.dart';
 
 void main() => runApp(const MyApp());
 
@@ -10,17 +11,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-          appBarTheme: const AppBarTheme(
-              iconTheme: IconThemeData(color: Colors.white),
-              color: Colors.blue,
-              titleTextStyle: TextStyle(
-                  color: Colors.white,
-                  fontSize: 23,
-                  fontWeight: FontWeight.bold)),
-          floatingActionButtonTheme: const FloatingActionButtonThemeData(
-              backgroundColor: Colors.blue, foregroundColor: Colors.white)),
-      home: const ContactList(),
+      theme: ThemeData.dark(),
+      // theme: ThemeData(
+      //     appBarTheme: const AppBarTheme(
+      //         iconTheme: IconThemeData(color: Colors.white),
+      //         color: Colors.blue,
+      //         titleTextStyle: TextStyle(
+      //             color: Colors.white,
+      //             fontSize: 23,
+      //             fontWeight: FontWeight.bold)),
+      //     floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      //         backgroundColor: Colors.blue, 
+      //         foregroundColor: Colors.white)),
+      initialRoute: "/home",
+      onGenerateRoute: (settings) {
+        if(settings.name == "/home") {
+          return MaterialPageRoute(builder: (context) => const ContactList());
+        }
+        else if(settings.name == "/contact") {
+          final contact = settings.arguments as Contact;
+          return MaterialPageRoute(builder: (context) => ContactPage(contact));
+        }
+        else if(settings.name == "/add-contact") {
+          return MaterialPageRoute(builder: (context) => const AddContactPage());
+        }
+        return null;
+      },
     );
   }
 }
@@ -59,7 +75,18 @@ class _ContactListState extends State<ContactList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('My Contacts')), body: _body());
+        appBar: AppBar(title: const Text('My Contacts')), 
+        body: _body(),
+        floatingActionButton: ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(Colors.deepPurple)
+          ),
+          onPressed: (){
+            Navigator.pushNamed(context, "/add-contact");
+          }, 
+          child: const Icon(Icons.contacts_rounded)
+        ),
+    );
   }
 
   Widget _body() {
@@ -70,14 +97,19 @@ class _ContactListState extends State<ContactList> {
       return const Center(child: CircularProgressIndicator());
     }
     return ListView.builder(
-        itemCount: _contacts!.length,
-        itemBuilder: (context, i) => ListTile(
-            title: Text(_contacts![i].displayName),
-            onTap: () {
-              FlutterContacts.getContact(_contacts![i].id).then((contact) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => ContactPage(contact!)));
-              });
-            }));
+      itemCount: _contacts!.length,
+      itemBuilder: (context, i) => ListTile(
+        title: Text(_contacts![i].displayName),
+        onTap: () {
+          FlutterContacts.getContact(_contacts![i].id).then((contact) {
+            Navigator.pushNamed(
+              context,
+              "/contact",
+              arguments: contact
+            );
+          });
+        }
+      )
+    );
   }
 }

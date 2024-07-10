@@ -10,7 +10,9 @@ class ContactPage extends StatelessWidget {
       appBar: AppBar(title: Text(contact.displayName)),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, 
+        children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text('First name: ${contact.name.first}'),
@@ -29,6 +31,19 @@ class ContactPage extends StatelessWidget {
             child: Text(
                 'Email address: ${contact.emails.isNotEmpty ? contact.emails.first.address : '(none)'}'),
           ),
+          const SizedBox(height: 40,),
+          Center(
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.deepPurple)
+              ),
+              onPressed: () {
+                contact.delete();
+                Navigator.pushNamed(context, "/home");
+              }, 
+              child: const Text("Delete Contact")
+            ),
+          )
         ]),
       ));
 }
