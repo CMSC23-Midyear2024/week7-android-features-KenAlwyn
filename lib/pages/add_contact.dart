@@ -67,7 +67,7 @@ class _AddContactPageState extends State<AddContactPage> {
                       _lname = val;
                     });
                   }),
-                  createTextFormField("Phone Number", false, (val){
+                  createTextFormField("Phone Number", true, (val){
                     setState(() {
                       _phoneNumber = val;
                     });
@@ -93,7 +93,7 @@ class _AddContactPageState extends State<AddContactPage> {
                             first: _fname!,
                             last: _lname!
                           ),
-                          phones: [Phone(_phoneNumber ?? "")], 
+                          phones: [Phone(_phoneNumber!)], 
                           emails: [Email(_email ?? "")]
                         );
 
